@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>P055_TBasisLib_2</ProjectName>
+    <ProjectGuid>{AA61B678-EE69-4678-819D-1FD6D05C789C}</ProjectGuid>
+    <RootNamespace>TBasisLib_2</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>../../output</OutDir>
+    <IntDir>../../output/TBasisLib_2</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>../../output</OutDir>
+    <IntDir>../../output/TBasisLib_2</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../../dx/include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Lib>
+      <OutputFile>TBasisLib32d_nofx_2.lib</OutputFile>
+      <AdditionalLibraryDirectories>../../dx/lib/x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d2d1.lib;dwrite.lib</AdditionalDependencies>
+    </Lib>
+    <PostBuildEvent>
+      <Command>copy "./TBasisLib32d_nofx_2.lib" "..\\..\\lib"
+copy "*.h" "..\\..\\include\\Inc_nofx_2"</Command>
+    </PostBuildEvent>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../../include/dx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Lib>
+      <OutputFile>TBasisLib32R_2.lib</OutputFile>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>../../lib/dx/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <PostBuildEvent>
+      <Command>copy "./TBasisLib32d_2.lib" "..\\..\\lib"
+copy "*.h" "..\\..\\include\\Inc_2"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="TArcBall.cpp" />
+    <ClCompile Include="TBackViewCamera.cpp" />
+    <ClCompile Include="TBasisLib_2.cpp" />
+    <ClCompile Include="TCamera.cpp" />
+    <ClCompile Include="TDevice.cpp" />
+    <ClCompile Include="TDirectWrite.cpp" />
+    <ClCompile Include="TDxBuffer.cpp" />
+    <ClCompile Include="TDxState.cpp" />
+    <ClCompile Include="TEditer.cpp" />
+    <ClCompile Include="TFrustum.cpp" />
+    <ClCompile Include="TInput.cpp" />
+    <ClCompile Include="TInputLayout.cpp" />
+    <ClCompile Include="TMatrix.cpp" />
+    <ClCompile Include="TMiniMap.cpp" />
+    <ClCompile Include="TModelViewCamera.cpp" />
+    <ClCompile Include="TParser.cpp" />
+    <ClCompile Include="TRegister.cpp" />
+    <ClCompile Include="TRender.cpp" />
+    <ClCompile Include="TRenderTexture.cpp" />
+    <ClCompile Include="TShader.cpp" />
+    <ClCompile Include="TShape.cpp" />
+    <ClCompile Include="TStreamOut.cpp" />
+    <ClCompile Include="TTexture.cpp" />
+    <ClCompile Include="TTimer.cpp" />
+    <ClCompile Include="TVector.cpp" />
+    <ClCompile Include="TViewDS.cpp" />
+    <ClCompile Include="TViewPort.cpp" />
+    <ClCompile Include="TViewRT.cpp" />
+    <ClCompile Include="TWindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TArcBall.h" />
+    <ClInclude Include="TBackViewCamera.h" />
+    <ClInclude Include="TBasis.h" />
+    <ClInclude Include="TBasisEx.h" />
+    <ClInclude Include="TBasisLib_2.h" />
+    <ClInclude Include="TBasisStd.h" />
+    <ClInclude Include="TCamera.h" />
+    <ClInclude Include="TDefine.h" />
+    <ClInclude Include="TDevice.h" />
+    <ClInclude Include="TDirectWrite.h" />
+    <ClInclude Include="TDxBuffer.h" />
+    <ClInclude Include="TDxState.h" />
+    <ClInclude Include="TEditer.h" />
+    <ClInclude Include="TFrustum.h" />
+    <ClInclude Include="TInput.h" />
+    <ClInclude Include="TInputLayout.h" />
+    <ClInclude Include="TMatrix.h" />
+    <ClInclude Include="TMiniMap.h" />
+    <ClInclude Include="TModelViewCamera.h" />
+    <ClInclude Include="TParser.h" />
+    <ClInclude Include="TRegister.h" />
+    <ClInclude Include="TRender.h" />
+    <ClInclude Include="TRenderTexture.h" />
+    <ClInclude Include="TShader.h" />
+    <ClInclude Include="TShape.h" />
+    <ClInclude Include="TStreamOut.h" />
+    <ClInclude Include="TStructure.h" />
+    <ClInclude Include="TTemplate.h" />
+    <ClInclude Include="TTexture.h" />
+    <ClInclude Include="TTimer.h" />
+    <ClInclude Include="TVector.h" />
+    <ClInclude Include="TViewDS.h" />
+    <ClInclude Include="TViewPort.h" />
+    <ClInclude Include="TViewRT.h" />
+    <ClInclude Include="TWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Data\shader\Lighting.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Data\shader\RenderBox.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Data\shader\Shape.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
