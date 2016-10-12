@@ -1,3 +1,4 @@
+#include "..\MapTool\GMapTileRender.h"
 #include "stdafx.h"
 #include "GMapTileRender.h"
 
@@ -69,6 +70,7 @@ bool GMapTileRender::Build(GMap * pMap, DWORD dwWidth, DWORD dwHeight)
 	}
 	return false;
 }
+
 
 GNode * GMapTileRender::CreateNode(GNode * pParentNode, DWORD dwTL, DWORD dwTR, DWORD dwBL, DWORD dwBR)
 {

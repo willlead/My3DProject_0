@@ -11,7 +11,8 @@
 #include "TBasisLib_0.h"
 
 #include "TCamera.h"
-#include "GQuadTree.h"
+#include "GMapTileRender.h"
+#include "THeightMap.h"
 #include "TMap.h"
 
 // CMapToolApp:
@@ -22,25 +23,34 @@ class CMapToolApp : public CWinAppEx, public TBasisLib_0
 {
 public:
 	shared_ptr<TCamera >	m_pMainCamera;
+	//--------------------------------------------------------------------------------------
+	// 쿼드트리
+	//--------------------------------------------------------------------------------------
+	GMapTileRender	m_QuadTree;
+	//--------------------------------------------------------------------------------------
+	// 지형
+	//--------------------------------------------------------------------------------------
+	THeightMap		m_Map;
 	
-	GQuadTree		m_QuadTree;
-	TMap			m_CustomMap;
-
-	TShape*			m_pLine;
-	D3DXMATRIX		m_matWorld;
-	int				m_iDrawDepth;
 public:
-	bool		Init();
-	bool		Frame();
-	bool		Render();
-	bool		Release();
-	bool		DrawDebug();
-	bool		DrawQuadLine(GNode* pNode);
+	bool			Init();
+	bool			Frame();
+	bool			Render();
+	bool			Release();
+
 	//--------------------------------------------------------------------------------------
 	// 변경된 클라이언트 영역를 재설정을 위한 소멸 및 생성
 	//--------------------------------------------------------------------------------------
-	HRESULT		CreateResource();
-	HRESULT		DeleteResource();
+	HRESULT			CreateResource();
+	HRESULT			DeleteResource();
+	bool			DrawDebug();
+	//--------------------------------------------------------------------------------------
+	// 디버깅 용도
+	//--------------------------------------------------------------------------------------
+	TShape*			m_pLine;
+	bool			m_bDebugRender;
+	bool			DrawQuadLine(GNode* pNode);	
+
 
 public:
 	CMapToolApp();

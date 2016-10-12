@@ -34,68 +34,77 @@ bool CMapToolApp::Init()
 {
 	SAFE_NEW(m_pLine, TLineShape);
 	if (FAILED(m_pLine->Create(GetDevice(), L"../../data/shader/line.hlsl")))
+
 	{
 		MessageBox(0, _T("m_pLIne 실패"), _T("Fatal error"), MB_OK);
 		return false;
 	}
 	//--------------------------------------------------------------------------------------
+	// 높이맵 생성
+	//--------------------------------------------------------------------------------------
+	m_Map.Init(m_pd3dDevice, m_pImmediateContext);
+	m_Map.m_bStaticLight = true;
+	if (FAILED(m_Map.CreateHeightMap(L"../../data/heightMap513.bmp")))
+	{
+		return false;
+	}
+	TMapDesc MapDesc = { m_Map.m_iNumRows,m_Map.m_iNumCols,	50.0f, 20.0f,L"../../data/detail.bmp",	L"QuadTree.hlsl" };
+	//--------------------------------------------------------------------------------------
+	//  맵 생성
+	//--------------------------------------------------------------------------------------
+	//m_Map.Init( GetDevice(), m_pImmediateContext );
+	//TMapDesc MapDesc = { pow(2.0f,11.0f)+1, pow(2.0f,11.0f)+1, 100.0f,1.0f, L"../../data/sand.jpg", L"QuadTree.hlsl" };
+	if (!m_Map.Load(MapDesc))
+	{
+		return false;
+	}
+
+	//--------------------------------------------------------------------------------------
 	// 카메라  행렬 
 	//--------------------------------------------------------------------------------------	
 	m_pMainCamera = make_shared<TCamera>();
-	m_pMainCamera->SetViewMatrix(D3DXVECTOR3(0.0f, 300.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));
-	m_pMainCamera->SetProjMatrix(D3DX_PI * 0.25f, m_SwapChainDesc.BufferDesc.Width / (float)(m_SwapChainDesc.BufferDesc.Height), 1.0f, 1000.0f);
+	m_pMainCamera->SetViewMatrix(D3DXVECTOR3(-5000.0f, 1000.0f, -3000.0f), D3DXVECTOR3(-5000.0f, 1000.0f, 3000.0f));
+	m_pMainCamera->SetProjMatrix(D3DX_PI * 0.25f, m_SwapChainDesc.BufferDesc.Width / (float)(m_SwapChainDesc.BufferDesc.Height),
+		1.0f, 10000.0f);
+	//--------------------------------------------------------------------------------------
+	// 카메라 프로스텀 랜더링용 박스 오브젝트 생성
+	//--------------------------------------------------------------------------------------
+	m_pMainCamera->CreateRenderBox(GetDevice(), m_pImmediateContext);
+
 
 	//--------------------------------------------------------------------------------------
-	// 맵 타일 갯수 설정 
-	//--------------------------------------------------------------------------------------	
-	TMapDesc MapDesc = { 50, 50, 1.0f, 0.1f,L"../../data/castle.jpg", L"../../data/shader/plane.hlsl" };
-		//L"CustomizeMap.hlsl" };
-	m_CustomMap.Init(GetDevice(), m_pImmediateContext);
-	if (FAILED(m_CustomMap.Load(MapDesc)))
-	{
-		return false;
-	}
-	if (FAILED(CreateResource()))
-	{
-		return false;
-	}
+	// 미니맵 영역에 랜더링할 랜더타켓용 텍스처 생성( 기본 카메라 : 탑뷰 ) 
 	//--------------------------------------------------------------------------------------
-	// 쿼드트리 공간분할
-	//--------------------------------------------------------------------------------------	
-	m_QuadTree.Build(50.0f, 50.0f);
+
+
+	// 노이즈 맵의 셀 사이즈 이하로 분할되는 것을 방지한다.
+	// 공간분할 최소 사이즈 = 노이즈 맵의 셀 사이즈 * m_QuadTree.m_fMinDivideSize;
+	m_QuadTree.m_iMaxDepthLimit = 5;
+	m_QuadTree.Update(GetDevice(), m_pMainCamera.get());
+	m_QuadTree.SetMinDivideSize(m_QuadTree.m_fMinDivideSize * m_Map.m_fSellDistance);
+	m_QuadTree.Build(&m_Map, m_Map.m_iNumCols, m_Map.m_iNumRows);
+
+	//m_pTexture[0].Attach(DX::CreateShaderResourceView(GetDevice(), L"../../data/sand.jpg"));
+	//m_pTexture[1].Attach(DX::CreateShaderResourceView(GetDevice(), L"../../data/grass_2.jpg"));
+	//m_pTexture[2].Attach(DX::CreateShaderResourceView(GetDevice(), L"../../data/rock.jpg"));
+	//m_pTexture[3].Attach(DX::CreateShaderResourceView(GetDevice(), L"../../data/snow.jpg"));
 	return true;
 }
+
 bool CMapToolApp::Frame()
 {
-	// 2초당 1회전( 1 초 * D3DX_PI = 3.14 )
-	float t = m_Timer.GetElapsedTime() * D3DX_PI;
 	m_pMainCamera->Frame();
-	m_matWorld = *m_pMainCamera->GetWorldMatrix();
-
-	if (I_Input.KeyCheck(DIK_F4) == KEY_UP)
-	{
-		if (++m_iDrawDepth > 7) m_iDrawDepth = -1;
-		m_QuadTree.SetRenderDepth(m_iDrawDepth);
-	}
-	//--------------------------------------------------------------------------------------
-	g_pImmediateContext->UpdateSubresource(
-		m_CustomMap.m_Object.g_pVertexBuffer.Get(), 0, 0, &m_CustomMap.m_VertexList.at(0), 0, 0);
-	m_CustomMap.Frame();
-	
-	//--------------------------------------------------------------------------------------
-	// 쿼드트리를 사용하여 오브젝트 컬링
-	//--------------------------------------------------------------------------------------
 	return m_QuadTree.Frame();
 }
 bool CMapToolApp::Render()
 {
-	//--------------------------------------------------------------------------------------
-	m_CustomMap.SetMatrix(m_pMainCamera->GetWorldMatrix(), m_pMainCamera->GetViewMatrix(), m_pMainCamera->GetProjMatrix());
-	m_CustomMap.Render(m_pImmediateContext);
-	//--------------------------------------------------------------------------------------
-	// 쿼드트리 깊이 단위의 라인 랜더링
-	//--------------------------------------------------------------------------------------	
-	DrawQuadLine(m_QuadTree.m_pRootNode);
+	ApplySS(m_pImmediateContext, TDxState::g_pSSMirrorLinear);
+	m_Map.SetMatrix(0, m_pMainCamera->GetViewMatrix(), m_pMainCamera->GetProjMatrix());
+	m_Map.m_cbData.Color = D3DXVECTOR4(0.0f, 0.3f, 0.5f, 0.8f);
+	m_pImmediateContext->PSSetConstantBuffers(0, 1, m_Map.m_Object.g_pConstantBuffer.GetAddressOf());
+
+	m_QuadTree.Render(m_pImmediateContext);
+
 	return true;
 }
 
@@ -105,7 +114,7 @@ bool CMapToolApp::DrawQuadLine(GNode* pNode)
 
 	if (m_QuadTree.m_iRenderDepth >= pNode->m_dwDepth)
 	{
-		m_pLine->SetMatrix(&m_matWorld, m_pMainCamera->GetViewMatrix(), m_pMainCamera->GetProjMatrix());
+		m_pLine->SetMatrix(NULL, m_pMainCamera->GetViewMatrix(), m_pMainCamera->GetProjMatrix());
 
 		D3DXVECTOR4 vColor = D3DXVECTOR4(0.0f, 0.0f, 0.0f, 1.0f);
 		if (pNode->m_dwDepth == 0) vColor = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -165,7 +174,7 @@ HRESULT CMapToolApp::DeleteResource()
 
 bool CMapToolApp::Release()
 {
-	m_CustomMap.Release();
+	m_Map.Release();
 	SAFE_DEL(m_pLine);
 	return true;
 }
@@ -179,7 +188,7 @@ bool CMapToolApp::DrawDebug()
 	str.clear();
 	TCHAR pBuffer[256];
 	memset(pBuffer, 0, sizeof(TCHAR) * 256);
-	_stprintf_s(pBuffer, _T("Depth Control Key[F4] : Current Depth: %d\n"), m_iDrawDepth);
+	//_stprintf_s(pBuffer, _T("Depth Control Key[F4] : Current Depth: %d\n"), m_iDrawDepth);
 	str += pBuffer;
 
 	_stprintf_s(pBuffer, _T("Look:%10.4f,%10.4f,%10.4f \n"), m_pMainCamera->m_vLookVector.x,
@@ -357,7 +366,7 @@ class CAboutDlg : public CDialogEx
 public:
 	CAboutDlg();
 
-// 대화 상자 데이터입니다.
+	// 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ABOUTBOX };
 #endif

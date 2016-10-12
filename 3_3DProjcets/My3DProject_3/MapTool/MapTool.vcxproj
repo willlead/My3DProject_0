@@ -196,6 +196,7 @@
     <ClInclude Include="GBaseObj.h" />
     <ClInclude Include="GCreateMapDlg.h" />
     <ClInclude Include="GMapLOD.h" />
+    <ClInclude Include="GMapTileRender.h" />
     <ClInclude Include="GNode.h" />
     <ClInclude Include="GQuadTree.h" />
     <ClInclude Include="MainFrm.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="GBaseObj.cpp" />
     <ClCompile Include="GCreateMapDlg.cpp" />
     <ClCompile Include="GMapLOD.cpp" />
+    <ClCompile Include="GMapTileRender.cpp" />
     <ClCompile Include="GNode.cpp" />
     <ClCompile Include="GQuadTree.cpp" />
     <ClCompile Include="MainFrm.cpp" />
@@ -266,6 +268,11 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="CustomizeMap.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="QuadTree.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">VS</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>

@@ -37,6 +37,7 @@ public:
 	D3DXVECTOR3				m_vLightDir;
 	int*					m_pNormalLookupTable;
 	D3DXVECTOR3*			m_pFaceNormals;
+	bool					m_bStaticLight;
 public:
 	virtual HRESULT		SetInputLayout();
 	virtual bool		ReLoadVBuffer();
