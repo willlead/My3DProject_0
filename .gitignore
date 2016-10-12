@@ -1,3 +1,5 @@
+*.pch
+*.ipch
 *.tlog
 *.lastbuildstate
 *.idb
